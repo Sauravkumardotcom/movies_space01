@@ -1,9 +1,9 @@
-import { prisma } from '../config/db';
+import { prisma } from '../config/db/index';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { config } from '../config/env';
-import logger from '../utils/logger';
+import { config } from '../config/env/index';
+import logger from '../utils/logger/index';
 // ============================================
 // SCHEMAS
 // ============================================

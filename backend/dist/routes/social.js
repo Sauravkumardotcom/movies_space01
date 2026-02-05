@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { socialService } from '../services/social';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { socialService } from '../services/social/index';
+import { authMiddleware } from '../middleware/index';
+import { sendResponse } from '../utils/response/index';
+import logger from '../utils/logger/index';
 const router = Router();
 // ============================================
 // FOLLOW ROUTES (Protected)

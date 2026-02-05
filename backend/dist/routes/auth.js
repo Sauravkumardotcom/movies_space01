@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { authService } from '../services/auth';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { authService } from '../services/auth/index';
+import { authMiddleware } from '../middleware/index';
+import { sendResponse } from '../utils/response/index';
+import logger from '../utils/logger/index';
 const router = Router();
 // ============================================
 // AUTHENTICATION ROUTES

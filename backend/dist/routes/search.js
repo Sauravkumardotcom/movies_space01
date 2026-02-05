@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { searchService } from '../services/search';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { searchService } from '../services/search/index';
+import { sendResponse } from '../utils/response/index';
+import logger from '../utils/logger/index';
 const router = Router();
 // ============================================
 // SEARCH ROUTES (Public)
