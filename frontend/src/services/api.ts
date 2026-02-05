@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import type { ApiResponse } from '@types/api';
 
+// API base URL with /api/v1 path included
+// VITE_API_URL should be set to the full API path including /api/v1
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 class ApiClient {
