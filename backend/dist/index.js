@@ -4,20 +4,20 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
-import { config, validateConfig } from './config/env';
-import { requestIdMiddleware, errorHandler } from './middleware/index';
-import healthRoutes from './routes/health';
-import authRoutes from './routes/auth';
-import userRoutes from './routes/user';
-import movieRoutes from './routes/movies';
-import musicRoutes from './routes/music';
-import engagementRoutes from './routes/engagement';
-import commentRoutes from './routes/comment';
-import socialRoutes from './routes/social';
-import searchRoutes from './routes/search';
-import notificationRoutes from './routes/notification';
-import adminRoutes from './routes/admin';
-import logger from '../utils/logger';
+import { config, validateConfig } from './config/env.js';
+import { requestIdMiddleware, errorHandler } from './middleware/index.js';
+import healthRoutes from './routes/health.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/user.js';
+import movieRoutes from './routes/movies.js';
+import musicRoutes from './routes/music.js';
+import engagementRoutes from './routes/engagement.js';
+import commentRoutes from './routes/comment.js';
+import socialRoutes from './routes/social.js';
+import searchRoutes from './routes/search.js';
+import notificationRoutes from './routes/notification.js';
+import adminRoutes from './routes/admin.js';
+import logger from './utils/logger.js';
 // Validate environment
 validateConfig();
 const app = express();
@@ -78,4 +78,3 @@ process.on('SIGTERM', () => {
 });
 export default app;
 //# sourceMappingURL=index.js.map
-
