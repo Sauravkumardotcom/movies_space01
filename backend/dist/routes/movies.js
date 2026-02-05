@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { sendResponse } from './../utils/response.js';
-import { movieService } from './../services/movie.js';
-import { MovieFilterSchema } from './../types/validation.js';
+import { sendResponse } from './utils/response';
+import { movieService } from './services/movie';
+import { MovieFilterSchema } from './types/validation';
 const router = Router();
 /**
  * GET /api/v1/movies

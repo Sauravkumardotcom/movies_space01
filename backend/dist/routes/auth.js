@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { authService } from '../services/auth.js';
-import { authMiddleware } from '../middleware.js';
-import { sendResponse } from '../utils/response.js';
-import logger from '../utils/logger.js';
+import { authService } from '../services/auth';
+import { authMiddleware } from '../middleware';
+import { sendResponse } from '../utils/response';
+import logger from '../utils/logger';
 const router = Router();
 // ============================================
 // AUTHENTICATION ROUTES
@@ -13,13 +13,27 @@ const router = Router();
  * Body: { email, username, password }
  */
 router.post('/signup', async (req, res) => {
+    const startTime = Date.now();
+    const requestId = res.locals.requestId;
     try {
+        console.log(`[${requestId}] Signup endpoint hit - Body:`, {
+            email: req.body.email,
+            username: req.body.username,
+            hasPassword: !!req.body.password
+        });
         const { email, username, password } = req.body;
+        // Validate input
+        if (!email || !username || !password) {
+            logger.warn(`[${requestId}] Missing required fields for signup`);
+            return sendResponse(res, 400, 'Email, username, and password are required');
+        }
+        logger.info(`[${requestId}] Starting user registration for: ${email}`);
         const result = await authService.registerUser({
             email,
             username,
             password,
         });
+        logger.info(`[${requestId}] User registered successfully - Duration: ${Date.now() - startTime}ms`);
         // Set refresh token in HTTP-only cookie
         res.cookie('refreshToken', result.tokens.refreshToken, {
             httpOnly: true,
@@ -34,10 +48,18 @@ router.post('/signup', async (req, res) => {
         });
     }
     catch (error) {
-        logger.error('Error in POST /signup:', error);
+        logger.error(`[${requestId}] Error in POST /signup (${Date.now() - startTime}ms):`, error);
+        console.error(`[${requestId}] Signup error details:`, {
+            message: error.message,
+            code: error.code,
+            stack: error.stack?.split('\n').slice(0, 3).join('\n')
+        });
         // Handle specific error cases
-        if (error.message.includes('already')) {
+        if (error.message?.includes('already')) {
             return sendResponse(res, 409, error.message);
+        }
+        if (error.message?.includes('email')) {
+            return sendResponse(res, 400, error.message || 'Invalid email');
         }
         sendResponse(res, 400, error.message || 'Registration failed');
     }

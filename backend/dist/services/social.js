@@ -1,6 +1,6 @@
-import { prisma } from '../lib/prisma.js';
+import { prisma } from '../lib/prisma';
 import { z } from 'zod';
-import logger from '../utils/logger.js';
+import logger from '../utils/logger';
 // ============================================
 // ZSCHEMAS
 // ============================================

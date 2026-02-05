@@ -98,19 +98,32 @@ app.use((req, res) => {
 // Error handler
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(config.PORT, () => {
-  logger.info(`✅ Server running on http://localhost:${config.PORT}`);
-  logger.info(`📊 Environment: ${config.NODE_ENV}`);
+// Global error handlers - Critical for serverless
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception:', err);
+  process.exit(1);
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully...');
-  server.close(() => {
-    logger.info('Server closed');
-    process.exit(0);
-  });
+process.on('unhandledRejection', (reason) => {
+  logger.error('Unhandled Rejection:', reason);
+  process.exit(1);
 });
+
+// Only start server in non-serverless environments (development, local)
+if (config.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const server = app.listen(config.PORT, () => {
+    logger.info(`✅ Server running on http://localhost:${config.PORT}`);
+    logger.info(`📊 Environment: ${config.NODE_ENV}`);
+  });
+
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    logger.info('SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(0);
+    });
+  });
+}
 
 export default app;

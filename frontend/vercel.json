@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "buildCommand": "npm run build",
-  "env": {
-    "VITE_API_URL": "https://movies-space01-backend.vercel.app/api/v1"
-  }
-}

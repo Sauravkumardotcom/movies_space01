@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { sendResponse } from './../utils/response.js';
-import { authMiddleware } from './../middleware/index.js';
-import { userActivityService } from './../services/user-activity.js';
+import { sendResponse } from './utils/response';
+import { authMiddleware } from './middleware/index';
+import { userActivityService } from './services/user-activity';
 const router = Router();
 // ============================================
 // WATCHLIST ROUTES

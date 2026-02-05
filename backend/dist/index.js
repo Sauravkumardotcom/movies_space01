@@ -4,26 +4,48 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
-import { config, validateConfig } from './config/env.js';
-import { requestIdMiddleware, errorHandler } from './middleware/index.js';
-import healthRoutes from './routes/health.js';
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/user.js';
-import movieRoutes from './routes/movies.js';
-import musicRoutes from './routes/music.js';
-import engagementRoutes from './routes/engagement.js';
-import commentRoutes from './routes/comment.js';
-import socialRoutes from './routes/social.js';
-import searchRoutes from './routes/search.js';
-import notificationRoutes from './routes/notification.js';
-import adminRoutes from './routes/admin.js';
-import logger from './utils/logger.js';
+import { config, validateConfig } from './config/env';
+import { requestIdMiddleware, errorHandler } from './middleware/index';
+import healthRoutes from './routes/health';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
+import movieRoutes from './routes/movies';
+import musicRoutes from './routes/music';
+import engagementRoutes from './routes/engagement';
+import commentRoutes from './routes/comment';
+import socialRoutes from './routes/social';
+import searchRoutes from './routes/search';
+import notificationRoutes from './routes/notification';
+import adminRoutes from './routes/admin';
+import logger from './utils/logger';
 // Validate environment
 validateConfig();
 const app = express();
 // Security middleware
 app.use(helmet());
-app.use(cors({ origin: config.CORS_ORIGIN }));
+// CORS Configuration - Must be before routes
+const corsOptions = {
+    origin: (origin, callback) => {
+        const allowedOrigins = Array.isArray(config.CORS_ORIGIN)
+            ? config.CORS_ORIGIN.map(o => o.trim())
+            : [config.CORS_ORIGIN];
+        // Allow requests with no origin (like mobile apps, Postman, etc.)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            logger.warn(`CORS blocked request from origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+app.use(cors(corsOptions));
+// Preflight requests
+app.options('*', cors(corsOptions));
 // Request parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
@@ -63,18 +85,29 @@ app.use((req, res) => {
 });
 // Error handler
 app.use(errorHandler);
-// Start server
-const server = app.listen(config.PORT, () => {
-    logger.info(`✅ Server running on http://localhost:${config.PORT}`);
-    logger.info(`📊 Environment: ${config.NODE_ENV}`);
+// Global error handlers - Critical for serverless
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught Exception:', err);
+    process.exit(1);
 });
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    logger.info('SIGTERM received, shutting down gracefully...');
-    server.close(() => {
-        logger.info('Server closed');
-        process.exit(0);
+process.on('unhandledRejection', (reason) => {
+    logger.error('Unhandled Rejection:', reason);
+    process.exit(1);
+});
+// Only start server in non-serverless environments (development, local)
+if (config.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    const server = app.listen(config.PORT, () => {
+        logger.info(`✅ Server running on http://localhost:${config.PORT}`);
+        logger.info(`📊 Environment: ${config.NODE_ENV}`);
     });
-});
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+        logger.info('SIGTERM received, shutting down gracefully...');
+        server.close(() => {
+            logger.info('Server closed');
+            process.exit(0);
+        });
+    });
+}
 export default app;
 //# sourceMappingURL=index.js.map

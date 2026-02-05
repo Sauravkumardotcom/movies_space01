@@ -1,13 +1,14 @@
 import { PrismaClient } from '@prisma/client';
+// Ensure we reuse Prisma instances in serverless environments
 let prisma;
-if (process.env.NODE_ENV === 'production') {
-    prisma = new PrismaClient();
+// Use global to persist Prisma client for serverless environments
+const globalForPrisma = global;
+if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
+        // Connection pooling for serverless
+        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    });
 }
-else {
-    if (!global.prisma) {
-        global.prisma = new PrismaClient();
-    }
-    prisma = global.prisma;
-}
+prisma = globalForPrisma.prisma;
 export { prisma };
 //# sourceMappingURL=db.js.map

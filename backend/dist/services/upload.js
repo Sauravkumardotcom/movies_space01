@@ -1,6 +1,6 @@
-import { prisma } from '../config/db.js';
+import { prisma } from '../config/db';
 import { z } from 'zod';
-import logger from '../utils/logger.js';
+import logger from '../utils/logger';
 // ============================================
 // SCHEMAS
 // ============================================

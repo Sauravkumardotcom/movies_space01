@@ -46,7 +46,11 @@ export function validateConfig(): void {
   const missing = requiredVars.filter((key) => !config[key]);
 
   if (missing.length > 0) {
-    console.error(`Missing required environment variables: ${missing.join(', ')}`);
-    process.exit(1);
+    const errorMsg = `Missing required environment variables: ${missing.join(', ')}`;
+    console.error(errorMsg);
+    // Don't exit in serverless - let requests fail with proper error response
+    if (config.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
   }
 }

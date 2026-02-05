@@ -20,8 +20,8 @@ export const config = {
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || 'movies-space-media',
     S3_ENDPOINT: process.env.S3_ENDPOINT || 'https://s3.amazonaws.com',
-    // CORS
-    CORS_ORIGIN: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(','),
+    // CORS - Split by comma and trim whitespace
+    CORS_ORIGIN: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim()),
     // File Upload
     MAX_FILE_SIZE: parseInt(process.env.MAX_FILE_SIZE || '104857600', 10), // 100MB
     ALLOWED_UPLOAD_TYPES: (process.env.ALLOWED_UPLOAD_TYPES || 'audio/mpeg,audio/mp4,audio/wav,audio/ogg').split(','),
@@ -35,8 +35,12 @@ export function validateConfig() {
     const requiredVars = ['DATABASE_URL', 'JWT_SECRET'];
     const missing = requiredVars.filter((key) => !config[key]);
     if (missing.length > 0) {
-        console.error(`Missing required environment variables: ${missing.join(', ')}`);
-        process.exit(1);
+        const errorMsg = `Missing required environment variables: ${missing.join(', ')}`;
+        console.error(errorMsg);
+        // Don't exit in serverless - let requests fail with proper error response
+        if (config.NODE_ENV !== 'production') {
+            process.exit(1);
+        }
     }
 }
 //# sourceMappingURL=env.js.map
