@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload as UploadIcon, FileAudio, Loader } from 'lucide-react';
 import UploadCard from '../components/UploadCard';
-import { Loading } from '../components/Loading';
+import { SkeletonLoader } from '../components/Loading';
 import { ErrorDisplay as ErrorState } from '../components/ErrorState';
 import {
   useUserUploads,

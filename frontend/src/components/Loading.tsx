@@ -1,15 +1,27 @@
 import React from 'react';
 import { Loader } from 'lucide-react';
 
-export function SkeletonLoader(): JSX.Element {
+interface SkeletonLoaderProps {
+  count?: number;
+  columns?: number;
+}
+
+export function SkeletonLoader({ count = 10, columns = 5 }: SkeletonLoaderProps = {}): JSX.Element {
+  const gridColsClass = {
+    2: 'grid-cols-2',
+    3: 'grid-cols-3',
+    4: 'grid-cols-4',
+    5: 'grid-cols-5',
+  }[columns] || `grid-cols-${columns}`;
+
   return (
     <div className="space-y-4">
       {/* Header skeleton */}
       <div className="h-8 bg-slate-800 rounded skeleton animate-pulse w-1/4"></div>
 
       {/* Grid of skeleton cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {Array.from({ length: 10 }).map((_, i) => (
+      <div className={`grid ${gridColsClass} sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4`}>
+        {Array.from({ length: count }).map((_, i) => (
           <div key={i} className="rounded-lg overflow-hidden bg-slate-900">
             <div className="aspect-video bg-slate-800 skeleton animate-pulse"></div>
             <div className="p-3 space-y-2">

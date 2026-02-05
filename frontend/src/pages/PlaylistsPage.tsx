@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ListMusic, Plus, Loader } from 'lucide-react';
 import PlaylistCard from '../components/PlaylistCard';
-import { Loading } from '../components/Loading';
+import { SkeletonLoader } from '../components/Loading';
 import { ErrorDisplay as ErrorState } from '../components/ErrorState';
 import {
   useUserPlaylists,
@@ -86,7 +86,7 @@ const PlaylistsPage: React.FC = () => {
 
         {/* Playlists Grid */}
         {isLoading ? (
-          <Loading.SkeletonLoader count={9} columns={3} />
+          <SkeletonLoader count={9} columns={3} />
         ) : error ? (
           <ErrorState.ErrorDisplay message="Failed to load playlists" />
         ) : playlists.length === 0 ? (

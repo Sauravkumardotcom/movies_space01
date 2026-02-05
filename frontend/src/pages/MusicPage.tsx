@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Music as MusicIcon } from 'lucide-react';
 import MusicCard from '../components/MusicCard';
-import { Loading } from '../components/Loading';
+import { SkeletonLoader } from '../components/Loading';
 import { ErrorDisplay as ErrorState } from '../components/ErrorState';
 import { useMusic, useGenres, useTrendingMusic } from '../hooks/useMusic';
 import type { Music } from '../services/music';
@@ -100,7 +100,7 @@ const MusicPage: React.FC = () => {
 
       {/* Music Grid */}
       {isLoading ? (
-        <Loading.SkeletonLoader count={20} columns={5} />
+        <SkeletonLoader count={20} columns={5} />
       ) : error ? (
         <ErrorState.ErrorDisplay message="Failed to load music" />
       ) : music.length === 0 ? (
