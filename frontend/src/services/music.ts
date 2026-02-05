@@ -1,5 +1,5 @@
-import apiClient from './api';
-import { ApiResponse, PaginatedResponse } from '@movies_space/shared';
+import { apiClient } from './api';
+import type { ApiResponse, PaginatedResponse } from '../types';
 
 // ============================================
 // TYPES

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Search, Music as MusicIcon } from 'lucide-react';
 import MusicCard from '../components/MusicCard';
-import { Loading, ErrorState } from '../components/ErrorState';
+import { Loading } from '../components/Loading';
+import { ErrorDisplay as ErrorState } from '../components/ErrorState';
 import { useMusic, useGenres, useTrendingMusic } from '../hooks/useMusic';
 import type { Music } from '../services/music';
 

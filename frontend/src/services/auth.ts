@@ -1,5 +1,5 @@
-import apiClient from './api';
-import { ApiResponse } from '@movies_space/shared';
+import { apiClient } from './api';
+import type { ApiResponse } from '../types';
 
 // ============================================
 // TYPES

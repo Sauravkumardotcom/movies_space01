@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ListMusic, Plus, Loader } from 'lucide-react';
 import PlaylistCard from '../components/PlaylistCard';
-import { Loading, ErrorState } from '../components/ErrorState';
+import { Loading } from '../components/Loading';
+import { ErrorDisplay as ErrorState } from '../components/ErrorState';
 import {
   useUserPlaylists,
   useCreatePlaylist,
