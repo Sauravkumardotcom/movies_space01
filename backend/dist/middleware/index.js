@@ -1,6 +1,6 @@
-import { generateRequestId, sendResponse } from '@utils/response';
-import { verifyAccessToken } from '@utils/auth';
-import logger from '@utils/logger';
+import { generateRequestId, sendResponse } from './../utils/response.js';
+import { verifyAccessToken } from './../utils/auth.js';
+import logger from './../utils/logger.js';
 export function requestIdMiddleware(req, res, next) {
     const requestId = generateRequestId();
     res.locals.requestId = requestId;
