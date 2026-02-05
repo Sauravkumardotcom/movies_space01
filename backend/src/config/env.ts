@@ -9,16 +9,16 @@ export const config = {
   API_VERSION: process.env.API_VERSION || 'v1',
 
   // Database
-  DATABASE_URL: process.env.DATABASE_URL || '',
+  DATABASE_URL: process.env.DATABASE_URL || process.env.MONGODB_URI || '',
 
   // Redis
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
 
   // JWT
   JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
-  JWT_EXPIRY: process.env.JWT_EXPIRY || '15m',
+  JWT_EXPIRY: process.env.JWT_EXPIRY || process.env.JWT_EXPIRE || '15m',
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'your-refresh-secret',
-  JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRY || '7d',
+  JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRY || process.env.JWT_REFRESH_EXPIRE || '7d',
 
   // AWS S3
   AWS_REGION: process.env.AWS_REGION || 'us-east-1',
