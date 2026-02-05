@@ -4,7 +4,7 @@ import { sendResponse } from '@utils/response';
 const router = Router();
 
 // Health check
-router.get('/health', (req: Request, res: Response) => {
+router.get('/', (req: Request, res: Response) => {
   sendResponse(res, 200, 'API is running', { uptime: process.uptime() });
 });
 

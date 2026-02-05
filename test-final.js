@@ -19,7 +19,7 @@ const results = [];
 backends.forEach(backend => {
   const options = {
     hostname: backend.host,
-    path: '/api/health',
+    path: '/api/v1/health',
     method: 'GET',
     headers: { 'Accept': 'application/json' },
     timeout: 5000
