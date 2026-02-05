@@ -36,27 +36,46 @@ function replaceAliases(content, filePath) {
     updated = updated.replace(regexNoSubpath, `'${relative}/index'$1`);
   }
   
-  // Fix relative imports - add /index only for directories, not files
-  const relativeImportRegex = /from\s+['"](\.\.\/.+?)['"];/g;
+  // Fix relative imports - add .js extension for all files
+  // Match both ../ and ./ relative imports
+  const relativeImportRegex = /from\s+['"](\.\.\/.+?|\.\/[^/].+?)['"];/g;
   updated = updated.replace(relativeImportRegex, (match, importPath) => {
-    // Skip if it already has /index or has a file extension
-    if (importPath.includes('/index') || importPath.includes('.js') || importPath.includes('.ts')) {
+    // Skip if it already has .js extension
+    if (importPath.includes('.js')) {
       return match;
     }
     
-    // Get absolute path to check if it's a directory
+    // Get absolute path to check if the import target exists
     const currentDir = path.dirname(filePath);
     const resolvedPath = path.resolve(currentDir, importPath);
     
-    // Check if resolved path is a directory that contains index.js
-    const indexPath = resolvedPath + '/index.js';
-    if (fs.existsSync(indexPath)) {
-      // It's a directory with index.js - add /index
-      const pathWithIndex = importPath + '/index';
-      return `from '${pathWithIndex}';`;
+    // Check if this path ends with /index - it's an index file
+    if (importPath.endsWith('/index')) {
+      const indexJsPath = resolvedPath + '.js';
+      if (fs.existsSync(indexJsPath)) {
+        // Add .js to index imports: ./middleware/index -> ./middleware/index.js
+        const pathWithJs = importPath + '.js';
+        return `from '${pathWithJs}';`;
+      }
+    } else {
+      // Regular file path - check both as directory index and as regular file
+      const indexPath = resolvedPath + '/index.js';
+      if (fs.existsSync(indexPath)) {
+        // It's a directory with index.js - add /index.js
+        const pathWithIndexJs = importPath + '/index.js';
+        return `from '${pathWithIndexJs}';`;
+      }
+      
+      // Check if resolved path with .js extension exists as a file
+      const jsPath = resolvedPath + '.js';
+      if (fs.existsSync(jsPath)) {
+        // It's a direct file - add .js extension
+        const pathWithJs = importPath + '.js';
+        return `from '${pathWithJs}';`;
+      }
     }
     
-    // It's likely a direct file import or doesn't exist yet
+    // Path doesn't exist yet, return as is
     return match;
   });
   
