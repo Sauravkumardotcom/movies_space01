@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { notificationService } from '../services/notification';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { notificationService } from '../services/notification.js';
+import { authMiddleware } from '../middleware.js';
+import { sendResponse } from '../utils/response.js';
+import logger from '../utils/logger.js';
 const router = Router();
 // All routes protected
 router.use(authMiddleware);

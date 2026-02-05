@@ -88,6 +88,16 @@ async function fixAliases() {
       return `from '${rel}'`;
     });
 
+    // Add .js extensions to relative imports that don't have them
+    // Matches: from '../path/module' or from './path/module' without .js extension
+    content = content.replace(/from\s+['"](\.[^'"]+)(?<!\.js)['"]/g, (match, importPath) => {
+      // Don't add .js to paths that end with / (directory imports like ../middleware)
+      if (importPath.endsWith('/')) {
+        return match;
+      }
+      return `from '${importPath}.js'`;
+    });
+
     if (content !== originalContent) {
       fs.writeFileSync(file, content, 'utf8');
       filesModified.add(file);

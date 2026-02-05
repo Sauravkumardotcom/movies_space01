@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { engagementService } from '../services/engagement';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { engagementService } from '../services/engagement.js';
+import { authMiddleware } from '../middleware.js';
+import { sendResponse } from '../utils/response.js';
+import logger from '../utils/logger.js';
 const router = Router();
 // ============================================
 // RATINGS ROUTES (Protected)

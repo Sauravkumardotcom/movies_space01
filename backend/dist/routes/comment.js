@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { commentService } from '../services/comment';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { commentService } from '../services/comment.js';
+import { authMiddleware } from '../middleware.js';
+import { sendResponse } from '../utils/response.js';
+import logger from '../utils/logger.js';
 const router = Router();
 // ============================================
 // COMMENTS ROUTES (Protected)

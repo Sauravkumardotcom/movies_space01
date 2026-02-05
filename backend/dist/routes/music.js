@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { musicService } from '../services/music';
-import { uploadService } from '../services/upload';
-import { authMiddleware } from '../middleware';
-import { sendResponse } from '../utils/response';
-import logger from '../utils/logger';
+import { musicService } from '../services/music.js';
+import { uploadService } from '../services/upload.js';
+import { authMiddleware } from '../middleware.js';
+import { sendResponse } from '../utils/response.js';
+import logger from '../utils/logger.js';
 const router = Router();
 // ============================================
 // MUSIC DISCOVERY ROUTES
