@@ -11,6 +11,7 @@ pnpm-lock.yaml
 
 # Build outputs
 dist/
+!/backend/dist
 build/
 .next/
 out/
