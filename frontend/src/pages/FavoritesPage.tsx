@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFavorites } from '../hooks/useEngagement';
-import { MovieCard } from '../movies/MovieCard';
-import { MusicCard } from '../music/MusicCard';
+import { MovieCard } from '../components/MovieCard';
+import { MusicCard } from '../components/MusicCard';
 
 type EntityType = 'movie' | 'music' | 'short' | undefined;
 
