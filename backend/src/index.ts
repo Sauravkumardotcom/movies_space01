@@ -26,7 +26,31 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({ origin: config.CORS_ORIGIN }));
+
+// CORS Configuration - Must be before routes
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = Array.isArray(config.CORS_ORIGIN) 
+      ? config.CORS_ORIGIN.map(o => o.trim())
+      : [config.CORS_ORIGIN];
+    
+    // Allow requests with no origin (like mobile apps, Postman, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      logger.warn(`CORS blocked request from origin: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+
+app.use(cors(corsOptions));
+// Preflight requests
+app.options('*', cors(corsOptions));
 
 // Request parsing
 app.use(express.json({ limit: '10mb' }));

@@ -27,8 +27,8 @@ export const config = {
   S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || 'movies-space-media',
   S3_ENDPOINT: process.env.S3_ENDPOINT || 'https://s3.amazonaws.com',
 
-  // CORS
-  CORS_ORIGIN: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(','),
+  // CORS - Split by comma and trim whitespace
+  CORS_ORIGIN: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim()),
 
   // File Upload
   MAX_FILE_SIZE: parseInt(process.env.MAX_FILE_SIZE || '104857600', 10), // 100MB
