@@ -1,14 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npm run build",
+  "buildCommand": "npm install",
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "dist/index.js",
       "use": "@vercel/node",
       "config": {
         "maxLambdaSize": "50mb",
-        "runtime": "nodejs20.x",
-        "includeFiles": "dist/**"
+        "runtime": "nodejs20.x"
       }
     }
   ],
