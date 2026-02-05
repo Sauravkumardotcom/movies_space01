@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useWatchlist } from '../../hooks/useEngagement';
+import { useWatchlist } from '../hooks/useEngagement';
 import { MovieCard } from '../movies/MovieCard';
 
 /**

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEngagementStats } from '../../hooks/useEngagement';
+import { useEngagementStats } from '../hooks/useEngagement';
 
 /**
  * StatsPage Component

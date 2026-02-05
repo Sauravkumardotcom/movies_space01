@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from '../../hooks/useEngagement';
+import { useHistory } from '../hooks/useEngagement';
 
 type EntityType = 'movie' | 'music' | 'short' | undefined;
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useFavorites } from '../../hooks/useEngagement';
+import { useFavorites } from '../hooks/useEngagement';
 import { MovieCard } from '../movies/MovieCard';
 import { MusicCard } from '../music/MusicCard';
 
