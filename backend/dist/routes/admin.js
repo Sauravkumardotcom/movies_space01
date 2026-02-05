@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { adminService } from '../services/admin/index';
-import { authMiddleware } from '../middleware/index';
-import { sendResponse } from '../utils/response/index';
-import logger from '../utils/logger/index';
+import { adminService } from '../services/admin.js';
+import { authMiddleware } from '../middleware/index.js';
+import { sendResponse } from '../utils/response.js';
+import logger from '../utils/logger.js';
 const router = Router();
 // Admin middleware check
 const adminMiddleware = async (req, res, next) => {

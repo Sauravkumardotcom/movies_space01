@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { sendResponse } from './utils/response';
+import { sendResponse } from '../utils/response.js';
 import { authMiddleware } from './middleware/index';
 import { userActivityService } from './services/user-activity';
 const router = Router();

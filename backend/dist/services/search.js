@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma/index';
-import logger from '../utils/logger/index';
+import logger from '../../utils/logger.js';
 // ============================================
 // SEARCH SERVICE
 // ============================================

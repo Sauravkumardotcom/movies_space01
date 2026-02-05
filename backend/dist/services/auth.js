@@ -3,7 +3,7 @@ import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env/index';
-import logger from '../utils/logger/index';
+import logger from '../../utils/logger.js';
 // ============================================
 // SCHEMAS
 // ============================================

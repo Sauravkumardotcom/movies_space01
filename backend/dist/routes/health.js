@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { sendResponse } from './utils/response';
+import { sendResponse } from '../utils/response.js';
 const router = Router();
 // Health check
 router.get('/', (req, res) => {

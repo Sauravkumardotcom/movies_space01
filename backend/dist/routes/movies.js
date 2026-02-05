@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { sendResponse } from './utils/response';
+import { sendResponse } from '../utils/response.js';
 import { movieService } from './services/movie';
 import { MovieFilterSchema } from './types/validation';
 const router = Router();
