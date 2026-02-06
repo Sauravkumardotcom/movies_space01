@@ -26,16 +26,47 @@ class ApiClient {
       return config;
     });
 
-    // Response interceptor to handle errors
+    // Response interceptor to handle errors and logging
     this.client.interceptors.response.use(
-      (response) => response.data,
-      (error: AxiosError<ApiResponse<unknown>>) => {
-        // Handle 401 (token expired) - refresh logic would go here
-        if (error.response?.status === 401) {
-          localStorage.removeItem('accessToken');
-          window.location.href = '/auth/login';
+      (response) => {
+        // Log successful API calls in development
+        if (import.meta.env.DEV) {
+          console.log(
+            `✅ ${response.config.method?.toUpperCase()} ${response.config.url}`,
+            response.status
+          );
         }
-        return Promise.reject(error.response?.data || error);
+        return response.data;
+      },
+      (error: AxiosError<ApiResponse<unknown>>) => {
+        // Log API errors
+        const status = error.response?.status;
+        const url = error.config?.url;
+        const method = error.config?.method?.toUpperCase();
+
+        if (status === 404) {
+          console.error(`❌ 404 Not Found: ${method} ${url}`);
+        } else if (status === 500) {
+          console.error(`❌ 500 Server Error: ${method} ${url}`, error.response?.data);
+        } else if (status && status >= 400) {
+          console.error(`⚠️ ${status} Error: ${method} ${url}`, error.response?.data);
+        }
+
+        // Handle 401 (token expired) - refresh logic would go here
+        if (status === 401) {
+          localStorage.removeItem('accessToken');
+          // Optionally redirect to login
+          // window.location.href = '/auth/login';
+        }
+
+        // Return error details but don't throw to prevent UI crashes
+        const errorData = error.response?.data || {
+          message: error.message || 'Network error',
+          error: 'UNKNOWN_ERROR',
+          statusCode: status || 0,
+        };
+
+        return Promise.reject(errorData);
       }
     );
   }

@@ -7,7 +7,9 @@ export default function NotificationsPage() {
   const { data, isLoading } = useNotifications(page, false);
   const markAllAsRead = useMarkAllAsRead();
 
-  const unreadCount = data?.data.filter((n) => !n.isRead).length || 0;
+  // Safe array guard - ensure data.data is always an array
+  const notifications = Array.isArray(data?.data) ? data.data : [];
+  const unreadCount = notifications.filter((n) => !n.isRead).length || 0;
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
@@ -30,14 +32,14 @@ export default function NotificationsPage() {
           </div>
         )}
 
-        {data && data.data.length === 0 && (
+        {notifications.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-400 text-lg">No notifications</p>
           </div>
         )}
 
         <div className="space-y-3">
-          {data?.data.map((notification) => (
+          {notifications.map((notification) => (
             <div
               key={notification.id}
               className={`p-4 rounded-lg border transition ${

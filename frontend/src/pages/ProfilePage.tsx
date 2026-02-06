@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
 import { useAuth } from '../store/auth';
+import { useTheme } from '../theme/ThemeProvider';
+import { Button } from '../components/common/FormElements';
+import { Input } from '../components/common/FormElements';
+import { Container, VStack, HStack, Card, Spacer } from '../components/layout/LayoutPrimitives';
 
 export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout, updateProfile, isLoading, error, setError } = useAuth();
+  const { tokens } = useTheme();
 
   const [editMode, setEditMode] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -30,13 +36,11 @@ export const ProfilePage: React.FC = () => {
     confirmPassword: '',
   });
 
-  // Redirect to login if not authenticated
   if (!user) {
     navigate('/login');
     return null;
   }
 
-  // Handle logout
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
@@ -49,7 +53,6 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  // Handle profile update
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -89,7 +92,6 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  // Handle password change (placeholder - would need password change endpoint)
   const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -119,11 +121,6 @@ export const ProfilePage: React.FC = () => {
     if (!isValid) return;
 
     try {
-      // Call password change endpoint
-      // await changePassword({
-      //   currentPassword: passwordData.currentPassword,
-      //   newPassword: passwordData.newPassword,
-      // });
       setShowPasswordModal(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
@@ -132,133 +129,183 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <Container size="lg" style={{ paddingTop: tokens.spacing.lg, paddingBottom: tokens.spacing.lg }}>
+      <VStack gap="lg">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Account Settings</h1>
-          <p className="text-slate-400">Manage your profile and security</p>
-        </div>
+        <VStack gap="sm">
+          <h1 style={{ fontSize: tokens.typography.sizes.lg, fontWeight: 'bold', color: tokens.colors.text.primary }}>
+            Account Settings
+          </h1>
+          <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+            Manage your profile and security
+          </p>
+        </VStack>
 
-        {/* Global Error */}
+        {/* Error Message */}
         {error && (
-          <div className="mb-6 bg-red-900/20 border border-red-500/30 rounded text-red-400 px-4 py-3 text-sm">
+          <div
+            style={{
+              backgroundColor: tokens.colors.error.surface,
+              border: `1px solid ${tokens.colors.error.border}`,
+              borderRadius: tokens.radius.md,
+              padding: tokens.spacing.md,
+              color: tokens.colors.error.text,
+              fontSize: tokens.typography.sizes.sm,
+            }}
+          >
             {error}
           </div>
         )}
 
         {/* Profile Card */}
-        <div className="bg-slate-800 rounded-lg overflow-hidden mb-6">
-          {/* Profile Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-32 relative">
-            {user?.avatar && (
-              <img
-                src={user.avatar}
-                alt={user.username}
-                className="absolute bottom-0 left-8 w-32 h-32 rounded-full border-4 border-slate-800 object-cover"
-              />
-            )}
-            {!user?.avatar && (
-              <div className="absolute bottom-0 left-8 w-32 h-32 rounded-full border-4 border-slate-800 bg-slate-700 flex items-center justify-center">
-                <span className="text-4xl text-slate-400">{user?.username?.[0]?.toUpperCase()}</span>
-              </div>
-            )}
+        <Card
+          style={{
+            backgroundColor: tokens.colors.background.secondary,
+            borderRadius: tokens.radius.lg,
+            padding: tokens.spacing.lg,
+            overflow: 'hidden',
+          }}
+        >
+          {/* Profile Header Banner */}
+          <div
+            style={{
+              background: `linear-gradient(to right, ${tokens.colors.primary}, ${tokens.colors.secondary})`,
+              height: '120px',
+              position: 'relative',
+              marginBottom: tokens.spacing.xl,
+            }}
+          >
+            {/* Avatar */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: `-${tokens.spacing.lg}`,
+                left: tokens.spacing.lg,
+                width: '100px',
+                height: '100px',
+                borderRadius: tokens.radius.full,
+                border: `4px solid ${tokens.colors.background.secondary}`,
+                backgroundColor: tokens.colors.background.secondary,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: tokens.colors.text.tertiary,
+              }}
+            >
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                user?.username?.[0]?.toUpperCase()
+              )}
+            </div>
           </div>
 
           {/* Profile Content */}
-          <div className="pt-20 px-8 pb-8">
+          <div style={{ marginTop: tokens.spacing.lg }}>
             {!editMode ? (
-              <>
+              <VStack gap="lg">
                 {/* View Mode */}
-                <div className="space-y-6">
+                <VStack gap="md">
                   <div>
-                    <p className="text-slate-400 text-sm mb-1">Username</p>
-                    <p className="text-white text-lg font-semibold">{user?.username}</p>
+                    <p style={{ fontSize: tokens.typography.sizes.xs, color: tokens.colors.text.tertiary, marginBottom: tokens.spacing.xs }}>
+                      Username
+                    </p>
+                    <p style={{ fontSize: tokens.typography.sizes.md, color: tokens.colors.text.primary, fontWeight: '600' }}>
+                      {user?.username}
+                    </p>
                   </div>
 
                   <div>
-                    <p className="text-slate-400 text-sm mb-1">Email Address</p>
-                    <p className="text-white text-lg">{user?.email}</p>
+                    <p style={{ fontSize: tokens.typography.sizes.xs, color: tokens.colors.text.tertiary, marginBottom: tokens.spacing.xs }}>
+                      Email Address
+                    </p>
+                    <p style={{ fontSize: tokens.typography.sizes.md, color: tokens.colors.text.primary }}>
+                      {user?.email}
+                    </p>
                   </div>
 
                   {user?.bio && (
                     <div>
-                      <p className="text-slate-400 text-sm mb-1">Bio</p>
-                      <p className="text-white text-lg">{user.bio}</p>
+                      <p style={{ fontSize: tokens.typography.sizes.xs, color: tokens.colors.text.tertiary, marginBottom: tokens.spacing.xs }}>
+                        Bio
+                      </p>
+                      <p style={{ fontSize: tokens.typography.sizes.md, color: tokens.colors.text.primary }}>
+                        {user.bio}
+                      </p>
                     </div>
                   )}
+                </VStack>
 
-                  <div className="pt-4 flex gap-3">
-                    <button
-                      onClick={() => setEditMode(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded transition"
-                    >
-                      Edit Profile
-                    </button>
-                    <button
-                      onClick={() => setShowPasswordModal(true)}
-                      className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded transition"
-                    >
-                      Change Password
-                    </button>
-                  </div>
-                </div>
-              </>
+                <HStack gap="md">
+                  <Button variant="primary" onClick={() => setEditMode(true)}>
+                    Edit Profile
+                  </Button>
+                  <Button variant="secondary" onClick={() => setShowPasswordModal(true)}>
+                    Change Password
+                  </Button>
+                </HStack>
+              </VStack>
             ) : (
-              <>
-                {/* Edit Mode */}
-                <form onSubmit={handleUpdateProfile} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-200 mb-2">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      value={editFormData.username}
-                      onChange={(e) => setEditFormData({ ...editFormData, username: e.target.value })}
-                      className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                    />
-                    {validationErrors.username && (
-                      <p className="text-red-400 text-xs mt-1">{validationErrors.username}</p>
-                    )}
-                  </div>
+              <form onSubmit={handleUpdateProfile}>
+                <VStack gap="md">
+                  <Input
+                    label="Username"
+                    type="text"
+                    value={editFormData.username}
+                    onChange={(e) => setEditFormData({ ...editFormData, username: e.target.value })}
+                    error={validationErrors.username}
+                  />
+
+                  <Input
+                    label="Email Address"
+                    type="email"
+                    value={editFormData.email}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    error={validationErrors.email}
+                  />
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-200 mb-2">
-                      Email Address
+                    <label
+                      style={{
+                        display: 'block',
+                        fontSize: tokens.typography.sizes.sm,
+                        fontWeight: '500',
+                        color: tokens.colors.text.secondary,
+                        marginBottom: tokens.spacing.xs,
+                      }}
+                    >
+                      Bio
                     </label>
-                    <input
-                      type="email"
-                      value={editFormData.email}
-                      onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                      className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                    />
-                    {validationErrors.email && (
-                      <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-200 mb-2">Bio</label>
                     <textarea
                       value={editFormData.bio}
                       onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
                       rows={3}
                       placeholder="Tell us about yourself..."
-                      className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition resize-none"
+                      style={{
+                        width: '100%',
+                        backgroundColor: tokens.colors.input.background,
+                        border: `1px solid ${tokens.colors.input.border}`,
+                        color: tokens.colors.input.text,
+                        borderRadius: tokens.radius.md,
+                        padding: tokens.spacing.md,
+                        fontSize: tokens.typography.sizes.sm,
+                        fontFamily: 'inherit',
+                        resize: 'none',
+                        transition: `all ${tokens.transitions.normal}`,
+                      }}
                     />
                   </div>
 
-                  <div className="pt-4 flex gap-3">
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 px-6 rounded transition"
-                    >
+                  <HStack gap="md">
+                    <Button type="submit" variant="primary" disabled={isLoading}>
                       {isLoading ? 'Saving...' : 'Save Changes'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="secondary"
                       onClick={() => {
                         setEditMode(false);
                         setEditFormData({
@@ -268,113 +315,114 @@ export const ProfilePage: React.FC = () => {
                           avatar: user?.avatar || '',
                         });
                       }}
-                      className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded transition"
                     >
                       Cancel
-                    </button>
-                  </div>
-                </form>
-              </>
+                    </Button>
+                  </HStack>
+                </VStack>
+              </form>
             )}
           </div>
-        </div>
+        </Card>
 
         {/* Logout Section */}
-        <div className="bg-slate-800 rounded-lg p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Session</h2>
-          <p className="text-slate-400 mb-4">Sign out of your account on all devices</p>
-          <button
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="bg-red-600 hover:bg-red-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 px-6 rounded transition"
-          >
-            {isLoggingOut ? 'Logging out...' : 'Logout'}
-          </button>
-        </div>
-      </div>
+        <Card style={{ backgroundColor: tokens.colors.background.secondary, borderRadius: tokens.radius.lg, padding: tokens.spacing.lg }}>
+          <VStack gap="md">
+            <div>
+              <h2 style={{ fontSize: tokens.typography.sizes.md, fontWeight: 'bold', color: tokens.colors.text.primary, marginBottom: tokens.spacing.sm }}>
+                Session
+              </h2>
+              <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+                Sign out of your account on all devices
+              </p>
+            </div>
+            <Button
+              variant="danger"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              style={{ width: '100%' }}
+            >
+              <LogOut size={16} style={{ marginRight: tokens.spacing.xs }} />
+              {isLoggingOut ? 'Logging out...' : 'Logout'}
+            </Button>
+          </VStack>
+        </Card>
+      </VStack>
 
       {/* Change Password Modal */}
       {showPasswordModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50">
-          <div className="bg-slate-800 rounded-lg max-w-md w-full p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">Change Password</h2>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: tokens.spacing.md,
+            zIndex: 50,
+          }}
+        >
+          <Card style={{ backgroundColor: tokens.colors.background.secondary, borderRadius: tokens.radius.lg, padding: tokens.spacing.lg, maxWidth: '400px', width: '100%' }}>
+            <VStack gap="lg">
+              <h2 style={{ fontSize: tokens.typography.sizes.md, fontWeight: 'bold', color: tokens.colors.text.primary }}>
+                Change Password
+              </h2>
 
-            <form onSubmit={handleChangePassword} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  value={passwordData.currentPassword}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, currentPassword: e.target.value })
-                  }
-                  placeholder="••••••••"
-                  className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                />
-              </div>
+              <form onSubmit={handleChangePassword} style={{ width: '100%' }}>
+                <VStack gap="md">
+                  <Input
+                    label="Current Password"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                    placeholder="••••••••"
+                  />
 
-              <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  value={passwordData.newPassword}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, newPassword: e.target.value })
-                  }
-                  placeholder="••••••••"
-                  className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                />
-                {validationErrors.password && (
-                  <p className="text-red-400 text-xs mt-1">{validationErrors.password}</p>
-                )}
-              </div>
+                  <Input
+                    label="New Password"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    placeholder="••••••••"
+                    error={validationErrors.password}
+                  />
 
-              <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) =>
-                    setPasswordData({ ...passwordData, confirmPassword: e.target.value })
-                  }
-                  placeholder="••••••••"
-                  className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                />
-                {validationErrors.confirmPassword && (
-                  <p className="text-red-400 text-xs mt-1">{validationErrors.confirmPassword}</p>
-                )}
-              </div>
+                  <Input
+                    label="Confirm Password"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    placeholder="••••••••"
+                    error={validationErrors.confirmPassword}
+                  />
 
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded transition"
-                >
-                  {isLoading ? 'Changing...' : 'Change Password'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowPasswordModal(false);
-                    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-                  }}
-                  className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded transition"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+                  <HStack gap="md">
+                    <Button type="submit" variant="primary" disabled={isLoading} style={{ flex: 1 }}>
+                      {isLoading ? 'Changing...' : 'Change Password'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        setShowPasswordModal(false);
+                        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                      }}
+                      style={{ flex: 1 }}
+                    >
+                      Cancel
+                    </Button>
+                  </HStack>
+                </VStack>
+              </form>
+            </VStack>
+          </Card>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 

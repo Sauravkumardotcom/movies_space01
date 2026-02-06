@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useMovies, useGenres } from '@hooks/useMovie';
 import { MovieCard } from '@components/MovieCard';
-import { SearchBar } from '@components/SearchBar';
-import { GenreFilter } from '@components/GenreFilter';
-import { Pagination } from '@components/Pagination';
-import { SkeletonLoader, LoadingSpinner } from '@components/Loading';
+import { useTheme } from '../theme/ThemeProvider';
+import { Button } from '../components/common/FormElements';
+import { Container, VStack, Grid } from '../components/layout/LayoutPrimitives';
+import { SkeletonLoader } from '@components/Loading';
 import { ErrorDisplay, EmptyState } from '@components/ErrorState';
 import type { MovieFilters } from '@types/media';
 
 export function MoviesPage(): JSX.Element {
   const [filters, setFilters] = useState<MovieFilters>({ page: 1, limit: 20 });
+  const { tokens } = useTheme();
 
   const { data: moviesData, isLoading: moviesLoading, error: moviesError } = useMovies(filters);
   const { data: genres, isLoading: genresLoading } = useGenres();
@@ -25,51 +26,81 @@ export function MoviesPage(): JSX.Element {
 
   if (moviesError) {
     return (
-      <div className="min-h-screen bg-slate-950 p-4 sm:p-6 lg:p-8">
+      <Container size="lg" style={{ paddingTop: tokens.spacing.lg }}>
         <ErrorDisplay message="Failed to load movies" onRetry={() => window.location.reload()} />
-      </div>
+      </Container>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <Container size="lg" style={{ paddingTop: tokens.spacing.lg }}>
+      <VStack gap="lg">
         {/* Header */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-8">🎬 Movies & TV</h1>
+        <h1 style={{ fontSize: tokens.typography.sizes.lg, fontWeight: 'bold', color: tokens.colors.text.primary }}>
+          🎬 Movies & TV
+        </h1>
 
         {/* Genre Filter */}
         {genres && (
-          <div className="mb-6">
-            <GenreFilter
-              genres={genres}
-              selectedGenre={filters.genre}
-              onSelect={handleGenreChange}
-              isLoading={moviesLoading}
-            />
-          </div>
+          <VStack gap="md">
+            <div style={{ display: 'flex', gap: tokens.spacing.sm, flexWrap: 'wrap' }}>
+              <Button
+                onClick={() => handleGenreChange(undefined)}
+                variant={!filters.genre ? 'primary' : 'secondary'}
+                size="sm"
+                disabled={moviesLoading}
+              >
+                All
+              </Button>
+              {genres.map((genre) => (
+                <Button
+                  key={genre}
+                  onClick={() => handleGenreChange(genre)}
+                  variant={filters.genre === genre ? 'primary' : 'secondary'}
+                  size="sm"
+                  disabled={moviesLoading}
+                >
+                  {genre}
+                </Button>
+              ))}
+            </div>
+          </VStack>
         )}
 
         {/* Movies Grid */}
         {moviesLoading && genres === undefined ? (
           <SkeletonLoader />
         ) : moviesData && moviesData.items.length > 0 ? (
-          <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
+          <VStack gap="lg">
+            <Grid columns={{ base: 2, sm: 3, md: 4, lg: 5 }}>
               {moviesData.items.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} />
               ))}
-            </div>
+            </Grid>
 
             {/* Pagination */}
             {moviesData.total > 20 && (
-              <Pagination
-                page={filters.page || 1}
-                hasMore={moviesData.hasMore}
-                onPageChange={handlePageChange}
-                isLoading={moviesLoading}
-              />
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: tokens.spacing.md, paddingTop: tokens.spacing.lg }}>
+                <Button
+                  onClick={() => handlePageChange(Math.max(1, (filters.page || 1) - 1))}
+                  disabled={(filters.page || 1) === 1 || moviesLoading}
+                  variant="secondary"
+                >
+                  ← Previous
+                </Button>
+                <span style={{ color: tokens.colors.text.secondary }}>
+                  Page {filters.page || 1}
+                </span>
+                <Button
+                  onClick={() => handlePageChange((filters.page || 1) + 1)}
+                  disabled={!moviesData.hasMore || moviesLoading}
+                  variant="primary"
+                >
+                  Next →
+                </Button>
+              </div>
             )}
-          </>
+          </VStack>
         ) : (
           <EmptyState
             title="No movies found"
@@ -77,7 +108,7 @@ export function MoviesPage(): JSX.Element {
             action={{ label: 'Clear filters', onClick: () => setFilters({ page: 1, limit: 20 }) }}
           />
         )}
-      </div>
-    </div>
+      </VStack>
+    </Container>
   );
 }

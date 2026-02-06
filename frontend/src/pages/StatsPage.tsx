@@ -1,153 +1,144 @@
 import React from 'react';
+import { BarChart3 } from 'lucide-react';
 import { useEngagementStats } from '../hooks/useEngagement';
+import { useTheme } from '../theme/ThemeProvider';
+import { Container, VStack, Grid, Card } from '../components/layout/LayoutPrimitives';
+import { LoadingScreen, EmptyState } from '../components/common/StateComponents';
 
-/**
- * StatsPage Component
- * Display user engagement statistics and summary
- */
 export const StatsPage: React.FC = () => {
+  const { tokens } = useTheme();
   const { data: stats, isLoading, error } = useEngagementStats();
 
-  if (isLoading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-gray-600'>Loading statistics...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-red-600'>Error loading statistics</div>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingScreen />;
+  if (error) return <EmptyState title="Error loading statistics" />;
 
   const formatHours = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins}m`;
-    }
+    if (hours > 0) return `${hours}h ${mins}m`;
     return `${mins}m`;
   };
 
   return (
-    <div className='max-w-4xl mx-auto px-4 py-8'>
-      {/* Header */}
-      <div className='mb-12'>
-        <h1 className='text-4xl font-bold text-white mb-2'>Your Statistics</h1>
-        <p className='text-gray-400'>Your engagement summary across Movies Space</p>
-      </div>
-
-      {stats && (
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12'>
-          {/* Total Watched */}
-          <div className='bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-blue-300 mb-2'>
-              {formatHours(stats.totalMinutesWatched)}
-            </div>
-            <p className='text-gray-300 text-sm'>Total Time Watched</p>
-            <p className='text-gray-500 text-xs mt-2'>({stats.totalMinutesWatched} minutes)</p>
+    <Container size="md" style={{ paddingTop: tokens.spacing.lg }}>
+      <VStack gap="lg">
+        {/* Header */}
+        <VStack gap="sm">
+          <div style={{ display: 'flex', alignItems: 'center', gap: tokens.spacing.md }}>
+            <BarChart3 size={32} style={{ color: tokens.colors.primary }} />
+            <h1 style={{ fontSize: tokens.typography.sizes.lg, fontWeight: 'bold', color: tokens.colors.text.primary }}>
+              Your Statistics
+            </h1>
           </div>
+          <p style={{ color: tokens.colors.text.tertiary }}>Your engagement summary across Movies Space</p>
+        </VStack>
 
-          {/* History Entries */}
-          <div className='bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-purple-300 mb-2'>{stats.historyEntries}</div>
-            <p className='text-gray-300 text-sm'>
-              {stats.historyEntries === 1 ? 'Watch Entry' : 'Watch Entries'}
-            </p>
-          </div>
-
-          {/* Ratings */}
-          <div className='bg-gradient-to-br from-yellow-900 to-yellow-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-yellow-300 mb-2'>{stats.ratingsCount}</div>
-            <p className='text-gray-300 text-sm'>
-              {stats.ratingsCount === 1 ? 'Rating' : 'Ratings'} Given
-            </p>
-          </div>
-
-          {/* Favorites */}
-          <div className='bg-gradient-to-br from-red-900 to-red-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-red-300 mb-2'>{stats.favoritesCount}</div>
-            <p className='text-gray-300 text-sm'>
-              {stats.favoritesCount === 1 ? 'Favorite' : 'Favorites'}
-            </p>
-          </div>
-
-          {/* Watchlist */}
-          <div className='bg-gradient-to-br from-blue-900 to-cyan-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-cyan-300 mb-2'>{stats.watchlistCount}</div>
-            <p className='text-gray-300 text-sm'>
-              {stats.watchlistCount === 1 ? 'Movie' : 'Movies'} in Watchlist
-            </p>
-          </div>
-
-          {/* Engagement Score */}
-          <div className='bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 text-center'>
-            <div className='text-4xl font-bold text-green-300 mb-2'>
-              {stats.ratingsCount + stats.favoritesCount + stats.watchlistCount}
-            </div>
-            <p className='text-gray-300 text-sm'>Total Interactions</p>
-          </div>
-        </div>
-      )}
-
-      {/* Breakdown */}
-      {stats && (
-        <div className='bg-gray-800 rounded-lg p-8'>
-          <h2 className='text-2xl font-bold text-white mb-6'>Breakdown</h2>
-
-          <div className='space-y-6'>
-            {/* Time Watched */}
-            <div>
-              <div className='flex justify-between items-center mb-2'>
-                <span className='text-gray-300'>Total Time Watched</span>
-                <span className='text-white font-medium'>{formatHours(stats.totalMinutesWatched)}</span>
-              </div>
-              <div className='w-full bg-gray-700 rounded-full h-2'>
-                <div
-                  className='bg-blue-500 h-2 rounded-full'
+        {stats && (
+          <>
+            {/* Stats Grid */}
+            <Grid columns={{ base: 1, sm: 2 }}>
+              {[
+                { label: 'Total Time Watched', value: formatHours(stats.totalMinutesWatched), color: tokens.colors.primary },
+                { label: 'Watch Entries', value: stats.historyEntries, color: '#a855f7' },
+                { label: 'Ratings Given', value: stats.ratingsCount, color: '#eab308' },
+                { label: 'Favorites', value: stats.favoritesCount, color: '#ef4444' },
+                { label: 'Movies in Watchlist', value: stats.watchlistCount, color: '#06b6d4' },
+                { label: 'Total Interactions', value: stats.ratingsCount + stats.favoritesCount + stats.watchlistCount, color: '#22c55e' },
+              ].map((stat) => (
+                <Card
+                  key={stat.label}
                   style={{
-                    width: `${Math.min(100, (stats.totalMinutesWatched / 1000) * 100)}%`,
+                    background: `linear-gradient(135deg, ${stat.color}20 0%, ${stat.color}10 100%)`,
+                    border: `1px solid ${stat.color}40`,
+                    borderRadius: tokens.radius.lg,
+                    padding: tokens.spacing.lg,
+                    textAlign: 'center',
                   }}
-                />
-              </div>
-            </div>
+                >
+                  <VStack gap="sm" align="center">
+                    <div
+                      style={{
+                        fontSize: tokens.typography.sizes.xl,
+                        fontWeight: 'bold',
+                        color: stat.color,
+                      }}
+                    >
+                      {stat.value}
+                    </div>
+                    <p style={{ color: tokens.colors.text.secondary, fontSize: tokens.typography.sizes.sm }}>
+                      {stat.label}
+                    </p>
+                  </VStack>
+                </Card>
+              ))}
+            </Grid>
 
-            {/* Ratings Distribution */}
-            <div className='pt-4 border-t border-gray-700'>
-              <h3 className='text-lg font-medium text-white mb-4'>Your Engagement</h3>
-              <div className='space-y-3'>
-                <div className='flex justify-between'>
-                  <span className='text-gray-400'>Ratings Given</span>
-                  <span className='text-white font-medium'>{stats.ratingsCount}</span>
-                </div>
-                <div className='flex justify-between'>
-                  <span className='text-gray-400'>Favorites Added</span>
-                  <span className='text-white font-medium'>{stats.favoritesCount}</span>
-                </div>
-                <div className='flex justify-between'>
-                  <span className='text-gray-400'>Movies in Watchlist</span>
-                  <span className='text-white font-medium'>{stats.watchlistCount}</span>
-                </div>
-                <div className='flex justify-between'>
-                  <span className='text-gray-400'>Watch History Entries</span>
-                  <span className='text-white font-medium'>{stats.historyEntries}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+            {/* Breakdown */}
+            <Card style={{ backgroundColor: tokens.colors.background.secondary, borderRadius: tokens.radius.lg, padding: tokens.spacing.lg }}>
+              <VStack gap="lg">
+                <h2 style={{ fontSize: tokens.typography.sizes.md, fontWeight: 'bold', color: tokens.colors.text.primary }}>
+                  Breakdown
+                </h2>
 
-      {/* Footer Note */}
-      <div className='mt-12 pt-8 border-t border-gray-700'>
-        <p className='text-gray-500 text-sm text-center'>
-          Statistics are updated in real-time based on your interactions
-        </p>
-      </div>
-    </div>
+                <VStack gap="md">
+                  {/* Time Watched Progress */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: tokens.spacing.sm }}>
+                      <span style={{ color: tokens.colors.text.secondary }}>Total Time Watched</span>
+                      <span style={{ color: tokens.colors.text.primary, fontWeight: '500' }}>
+                        {formatHours(stats.totalMinutesWatched)}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        width: '100%',
+                        backgroundColor: tokens.colors.background.primary,
+                        borderRadius: tokens.radius.full,
+                        height: '8px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor: tokens.colors.primary,
+                          height: '100%',
+                          width: `${Math.min(100, (stats.totalMinutesWatched / 1000) * 100)}%`,
+                          borderRadius: tokens.radius.full,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Engagement Stats */}
+                  <div style={{ paddingTop: tokens.spacing.md, borderTop: `1px solid ${tokens.colors.background.primary}` }}>
+                    <h3 style={{ fontSize: tokens.typography.sizes.sm, fontWeight: '600', color: tokens.colors.text.primary, marginBottom: tokens.spacing.md }}>
+                      Your Engagement
+                    </h3>
+                    <VStack gap="sm">
+                      {[
+                        { label: 'Ratings Given', value: stats.ratingsCount },
+                        { label: 'Favorites Added', value: stats.favoritesCount },
+                        { label: 'Movies in Watchlist', value: stats.watchlistCount },
+                        { label: 'Watch History Entries', value: stats.historyEntries },
+                      ].map((item) => (
+                        <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: tokens.colors.text.secondary }}>{item.label}</span>
+                          <span style={{ color: tokens.colors.text.primary, fontWeight: '500' }}>{item.value}</span>
+                        </div>
+                      ))}
+                    </VStack>
+                  </div>
+                </VStack>
+              </VStack>
+            </Card>
+
+            {/* Footer */}
+            <div style={{ paddingTop: tokens.spacing.lg, borderTop: `1px solid ${tokens.colors.background.secondary}`, color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm, textAlign: 'center' }}>
+              Statistics are updated in real-time based on your interactions
+            </div>
+          </>
+        )}
+      </VStack>
+    </Container>
   );
 };

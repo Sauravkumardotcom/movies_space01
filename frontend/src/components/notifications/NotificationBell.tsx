@@ -11,7 +11,9 @@ export default function NotificationBell() {
   const markAllAsRead = useMarkAllAsRead();
   const deleteNotification = useDeleteNotification();
 
-  const unreadCount = data?.data.filter((n) => !n.isRead).length || 0;
+  // Safe array guard - ensure data.data is always an array
+  const notifications = Array.isArray(data?.data) ? data.data : [];
+  const unreadCount = notifications.filter((n) => !n.isRead).length || 0;
 
   return (
     <div className="relative">
@@ -47,12 +49,12 @@ export default function NotificationBell() {
             </div>
           )}
 
-          {data && data.data.length === 0 && (
+          {notifications.length === 0 && (
             <div className="text-center py-8 text-gray-400">No notifications</div>
           )}
 
           <div className="divide-y divide-gray-700">
-            {data?.data.map((notification) => (
+            {notifications.map((notification) => (
               <div
                 key={notification.id}
                 className={`p-4 hover:bg-gray-700 transition cursor-pointer ${

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../store/auth';
+import { useTheme } from '../theme/ThemeProvider';
+import { Button } from '../components/common/FormElements';
+import { Input } from '../components/common/FormElements';
+import { Container, VStack, Spacer } from '../components/layout/LayoutPrimitives';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isLoading, error, setError } = useAuth();
+  const { theme, tokens } = useTheme();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -16,7 +21,6 @@ export const LoginPage: React.FC = () => {
     password: '',
   });
 
-  // Validate form
   const validateForm = (): boolean => {
     const errors = { email: '', password: '' };
     let isValid = true;
@@ -62,90 +66,144 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-slate-400">Sign in to continue to Movies Space</p>
-        </div>
+    <div
+      style={{
+        backgroundColor: tokens.colors.background.primary,
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: tokens.spacing.md,
+      }}
+    >
+      <Container size="sm">
+        <VStack gap="xl" align="center">
+          {/* Header */}
+          <div style={{ textAlign: 'center' }}>
+            <h1
+              style={{
+                fontSize: tokens.typography.sizes.xl,
+                fontWeight: 'bold',
+                color: tokens.colors.text.primary,
+                marginBottom: tokens.spacing.sm,
+              }}
+            >
+              Welcome Back
+            </h1>
+            <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+              Sign in to continue to Movies Space
+            </p>
+          </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg p-6 space-y-4">
-          {/* Global Error */}
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-900/20 border border-red-500/30 rounded text-red-400 px-4 py-3 text-sm">
+            <div
+              style={{
+                backgroundColor: `${tokens.colors.error.surface}`,
+                border: `1px solid ${tokens.colors.error.border}`,
+                borderRadius: tokens.radius.md,
+                padding: tokens.spacing.md,
+                color: tokens.colors.error.text,
+                fontSize: tokens.typography.sizes.sm,
+                width: '100%',
+              }}
+            >
               {error}
             </div>
           )}
 
-          {/* Email Field */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.email && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
-            )}
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <VStack gap="md">
+              <Input
+                label="Email Address"
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                error={validationErrors.email}
+              />
 
-          {/* Password Field */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.password && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.password}</p>
-            )}
-          </div>
+              <Input
+                label="Password"
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                error={validationErrors.password}
+              />
 
-          {/* Remember Me & Forgot Password */}
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center text-slate-400 hover:text-slate-300 cursor-pointer">
-              <input type="checkbox" className="mr-2 accent-blue-500" />
-              Remember me
-            </label>
-            <Link to="/forgot-password" className="text-blue-400 hover:text-blue-300 transition">
-              Forgot password?
+              {/* Remember Me & Forgot Password */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  fontSize: tokens.typography.sizes.sm,
+                }}
+              >
+                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    style={{
+                      marginRight: tokens.spacing.xs,
+                      accentColor: tokens.colors.primary,
+                    }}
+                  />
+                  <span style={{ color: tokens.colors.text.secondary }}>Remember me</span>
+                </label>
+                <Link
+                  to="/forgot-password"
+                  style={{
+                    color: tokens.colors.primary,
+                    textDecoration: 'none',
+                    transition: `color ${tokens.transitions.normal}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.color = tokens.colors.primary;
+                    (e.target as HTMLElement).style.opacity = '0.8';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.color = tokens.colors.primary;
+                    (e.target as HTMLElement).style.opacity = '1';
+                  }}
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                variant="primary"
+                size="md"
+                style={{ width: '100%' }}
+              >
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+            </VStack>
+          </form>
+
+          {/* Footer */}
+          <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+            Don't have an account?{' '}
+            <Link
+              to="/signup"
+              style={{
+                color: tokens.colors.primary,
+                textDecoration: 'none',
+                fontWeight: '600',
+              }}
+            >
+              Sign up
             </Link>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded transition duration-200"
-          >
-            {isLoading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
-
-        {/* Footer */}
-        <p className="text-center text-slate-400 mt-6">
-          Don't have an account?{' '}
-          <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-semibold transition">
-            Sign up
-          </Link>
-        </p>
-      </div>
+          </p>
+        </VStack>
+      </Container>
     </div>
   );
 };

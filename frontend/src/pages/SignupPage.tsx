@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../store/auth';
+import { useTheme } from '../theme/ThemeProvider';
+import { Button } from '../components/common/FormElements';
+import { Input } from '../components/common/FormElements';
+import { Container, VStack, Spacer } from '../components/layout/LayoutPrimitives';
 
 // Password strength indicator
 const getPasswordStrength = (password: string): { score: number; label: string; color: string } => {
@@ -11,15 +15,16 @@ const getPasswordStrength = (password: string): { score: number; label: string; 
   if (/[0-9]/.test(password)) score++;
   if (/[!@#$%^&*]/.test(password)) score++;
 
-  if (score <= 1) return { score, label: 'Weak', color: 'red' };
-  if (score <= 2) return { score, label: 'Fair', color: 'yellow' };
-  if (score <= 3) return { score, label: 'Good', color: 'blue' };
-  return { score, label: 'Strong', color: 'green' };
+  if (score <= 1) return { score, label: 'Weak', color: '#ef4444' };
+  if (score <= 2) return { score, label: 'Fair', color: '#eab308' };
+  if (score <= 3) return { score, label: 'Good', color: '#3b82f6' };
+  return { score, label: 'Strong', color: '#22c55e' };
 };
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   const { signup, isLoading, error, setError } = useAuth();
+  const { tokens } = useTheme();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -37,7 +42,6 @@ export const SignupPage: React.FC = () => {
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Validate form
   const validateForm = (): boolean => {
     const errors = { email: '', username: '', password: '', confirmPassword: '' };
     let isValid = true;
@@ -105,177 +109,236 @@ export const SignupPage: React.FC = () => {
   const passwordStrength = getPasswordStrength(formData.password);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Join Movies Space</h1>
-          <p className="text-slate-400">Create your account to get started</p>
-        </div>
+    <div
+      style={{
+        backgroundColor: tokens.colors.background.primary,
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: tokens.spacing.md,
+      }}
+    >
+      <Container size="sm">
+        <VStack gap="xl" align="center">
+          {/* Header */}
+          <div style={{ textAlign: 'center' }}>
+            <h1
+              style={{
+                fontSize: tokens.typography.sizes.xl,
+                fontWeight: 'bold',
+                color: tokens.colors.text.primary,
+                marginBottom: tokens.spacing.sm,
+              }}
+            >
+              Join Movies Space
+            </h1>
+            <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+              Create your account to get started
+            </p>
+          </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-slate-800 rounded-lg p-6 space-y-4">
-          {/* Global Error */}
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-900/20 border border-red-500/30 rounded text-red-400 px-4 py-3 text-sm">
+            <div
+              style={{
+                backgroundColor: `${tokens.colors.error.surface}`,
+                border: `1px solid ${tokens.colors.error.border}`,
+                borderRadius: tokens.radius.md,
+                padding: tokens.spacing.md,
+                color: tokens.colors.error.text,
+                fontSize: tokens.typography.sizes.sm,
+                width: '100%',
+              }}
+            >
               {error}
             </div>
           )}
 
-          {/* Email Field */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.email && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
-            )}
-          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <VStack gap="md">
+              <Input
+                label="Email Address"
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                error={validationErrors.email}
+              />
 
-          {/* Username Field */}
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-slate-200 mb-2">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="your_username"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.username && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.username}</p>
-            )}
-          </div>
+              <Input
+                label="Username"
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="your_username"
+                error={validationErrors.username}
+              />
 
-          {/* Password Field */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.password && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.password}</p>
-            )}
+              <div>
+                <label
+                  htmlFor="password"
+                  style={{
+                    display: 'block',
+                    fontSize: tokens.typography.sizes.sm,
+                    fontWeight: '500',
+                    color: tokens.colors.text.secondary,
+                    marginBottom: tokens.spacing.xs,
+                  }}
+                >
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  style={{
+                    width: '100%',
+                    backgroundColor: tokens.colors.input.background,
+                    border: `1px solid ${tokens.colors.input.border}`,
+                    color: tokens.colors.input.text,
+                    borderRadius: tokens.radius.md,
+                    padding: `${tokens.spacing.sm} ${tokens.spacing.md}`,
+                    fontSize: tokens.typography.sizes.sm,
+                    transition: `all ${tokens.transitions.normal}`,
+                  }}
+                />
+                {validationErrors.password && (
+                  <p style={{ color: tokens.colors.error.text, fontSize: tokens.typography.sizes.xs, marginTop: tokens.spacing.xs }}>
+                    {validationErrors.password}
+                  </p>
+                )}
 
-            {/* Password Strength Indicator */}
-            {formData.password && (
-              <div className="mt-2 space-y-1">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1 bg-slate-700 rounded overflow-hidden">
-                    <div
-                      className={`h-full transition-all`}
-                      style={{
-                        width: `${(passwordStrength.score / 5) * 100}%`,
-                        backgroundColor:
-                          passwordStrength.color === 'red'
-                            ? '#ef4444'
-                            : passwordStrength.color === 'yellow'
-                              ? '#eab308'
-                              : passwordStrength.color === 'blue'
-                                ? '#3b82f6'
-                                : '#22c55e',
-                      }}
-                    />
+                {/* Password Strength Indicator */}
+                {formData.password && (
+                  <div style={{ marginTop: tokens.spacing.sm, display: 'flex', flexDirection: 'column', gap: tokens.spacing.xs }}>
+                    <div style={{ display: 'flex', gap: tokens.spacing.sm, alignItems: 'center' }}>
+                      <div
+                        style={{
+                          flex: 1,
+                          height: '4px',
+                          backgroundColor: tokens.colors.background.secondary,
+                          borderRadius: tokens.radius.full,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: '100%',
+                            width: `${(passwordStrength.score / 5) * 100}%`,
+                            backgroundColor: passwordStrength.color,
+                            transition: `width ${tokens.transitions.normal}`,
+                          }}
+                        />
+                      </div>
+                      <span
+                        style={{
+                          fontSize: tokens.typography.sizes.xs,
+                          fontWeight: '600',
+                          color: passwordStrength.color,
+                        }}
+                      >
+                        {passwordStrength.label}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: tokens.typography.sizes.xs, color: tokens.colors.text.tertiary }}>
+                      Use uppercase, lowercase, numbers, and symbols for a stronger password
+                    </p>
                   </div>
-                  <span
-                    className={`text-xs font-semibold ${
-                      passwordStrength.color === 'red'
-                        ? 'text-red-400'
-                        : passwordStrength.color === 'yellow'
-                          ? 'text-yellow-400'
-                          : passwordStrength.color === 'blue'
-                            ? 'text-blue-400'
-                            : 'text-green-400'
-                    }`}
-                  >
-                    {passwordStrength.label}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400">
-                  Use uppercase, lowercase, numbers, and symbols for a stronger password
-                </p>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-200 mb-2">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-            {validationErrors.confirmPassword && (
-              <p className="text-red-400 text-xs mt-1">{validationErrors.confirmPassword}</p>
-            )}
-          </div>
+              <Input
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+                error={validationErrors.confirmPassword}
+              />
 
-          {/* Terms Agreement */}
-          <label className="flex items-start gap-2 text-sm text-slate-400 hover:text-slate-300 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={agreedToTerms}
-              onChange={(e) => setAgreedToTerms(e.target.checked)}
-              className="mt-1 accent-blue-500"
-            />
-            <span>
-              I agree to the{' '}
-              <a href="/terms" className="text-blue-400 hover:text-blue-300 transition">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="/privacy" className="text-blue-400 hover:text-blue-300 transition">
-                Privacy Policy
-              </a>
-            </span>
-          </label>
+              {/* Terms Agreement */}
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: tokens.spacing.sm,
+                  fontSize: tokens.typography.sizes.sm,
+                  color: tokens.colors.text.secondary,
+                  cursor: 'pointer',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  style={{
+                    marginTop: '4px',
+                    accentColor: tokens.colors.primary,
+                  }}
+                />
+                <span>
+                  I agree to the{' '}
+                  <a
+                    href="/terms"
+                    style={{
+                      color: tokens.colors.primary,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Terms of Service
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="/privacy"
+                    style={{
+                      color: tokens.colors.primary,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Privacy Policy
+                  </a>
+                </span>
+              </label>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading || !agreedToTerms}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-2 rounded transition duration-200"
-          >
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
+              <Button
+                type="submit"
+                disabled={isLoading || !agreedToTerms}
+                variant="primary"
+                size="md"
+                style={{ width: '100%' }}
+              >
+                {isLoading ? 'Creating Account...' : 'Create Account'}
+              </Button>
+            </VStack>
+          </form>
 
-        {/* Footer */}
-        <p className="text-center text-slate-400 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-semibold transition">
-            Sign in
-          </Link>
-        </p>
-      </div>
+          {/* Footer */}
+          <p style={{ color: tokens.colors.text.tertiary, fontSize: tokens.typography.sizes.sm }}>
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              style={{
+                color: tokens.colors.primary,
+                textDecoration: 'none',
+                fontWeight: '600',
+              }}
+            >
+              Sign in
+            </Link>
+          </p>
+        </VStack>
+      </Container>
     </div>
   );
 };
