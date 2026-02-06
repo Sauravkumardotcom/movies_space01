@@ -1,11 +1,24 @@
 import { Router, Request, Response } from 'express';
 import { sendResponse } from '@utils/response';
+import { prisma } from '@config/db';
 
 const router = Router();
 
-// Health check
-router.get('/', (req: Request, res: Response) => {
-  sendResponse(res, 200, 'API is running', { uptime: process.uptime() });
+// Health check with database connectivity
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    sendResponse(res, 200, 'API is running', { 
+      uptime: process.uptime(),
+      db: 'connected'
+    });
+  } catch (err) {
+    sendResponse(res, 200, 'API is running', { 
+      uptime: process.uptime(),
+      db: 'disconnected',
+      error: err instanceof Error ? err.message : 'Unknown error'
+    });
+  }
 });
 
 // API info

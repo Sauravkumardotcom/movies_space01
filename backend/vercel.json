@@ -19,21 +19,5 @@
       "dest": "dist/index.js",
       "methods": ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "MONGODB_URI": "mongodb+srv://shakyalabs:Mydream@123@cluster0.efs3fjh.mongodb.net/?appName=Cluster0",
-    "JWT_SECRET": "your-super-secret-jwt-key-change-in-production",
-    "JWT_EXPIRE": "7d",
-    "JWT_REFRESH_SECRET": "your-super-secret-refresh-key-change-in-production",
-    "JWT_REFRESH_EXPIRE": "30d",
-    "FRONTEND_URL": "https://movies-space01-frontend.vercel.app",
-    "CORS_ORIGIN": "https://movies-space01-frontend.vercel.app",
-    "EMAIL_USER": "Souravshakya951@gmail.com",
-    "EMAIL_PASS": "nzrwngwreqialorz",
-    "ADMIN_EMAIL": "Souravshakya951@gmail.com",
-    "VITE_GOOGLE_APPS_SCRIPT_URL": "https://script.google.com/macros/s/AKfycbzawsuEIM6TYV7p_7w9L4A1Dk08ORLIg-53c1ouXK-QiLAUHAy3GA8I6TaKvC3JbQh6ow/exec",
-    "GOOGLE_SERVICE_ACCOUNT_EMAIL": "movies-space@movies-space-shakyalabs.iam.gserviceaccount.com",
-    "GOOGLE_SHEET_ID": "1bnzIhV3gI2UmOYzkOgAdAj40LnWdtqs1qj3wTFBHQpY"
-  }
+  ]
 }
