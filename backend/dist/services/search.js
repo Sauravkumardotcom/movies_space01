@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma/index';
-import logger from '../../utils/logger.js';
+import { prisma } from '../lib/prisma.js';
+import logger from '../utils/logger.js';
 // ============================================
 // SEARCH SERVICE
 // ============================================
@@ -224,3 +224,5 @@ export const searchService = {
     },
 };
 //# sourceMappingURL=search.js.map
+
+

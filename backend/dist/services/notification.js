@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma/index';
-import logger from '../../utils/logger.js';
+import { prisma } from '../lib/prisma.js';
+import logger from '../utils/logger.js';
 // ============================================
 // NOTIFICATION SERVICE
 // ============================================
@@ -171,3 +171,5 @@ export const notificationService = {
     },
 };
 //# sourceMappingURL=notification.js.map
+
+

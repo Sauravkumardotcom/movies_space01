@@ -1,6 +1,6 @@
-import { prisma } from '../config/db/index';
+import { prisma } from '../config/db.js';
 import { z } from 'zod';
-import logger from '../../utils/logger.js';
+import logger from '../utils/logger.js';
 // ============================================
 // SCHEMAS
 // ============================================
@@ -460,3 +460,5 @@ export const musicService = {
     },
 };
 //# sourceMappingURL=music.js.map
+
+

@@ -1,9 +1,9 @@
-import { prisma } from '../config/db/index';
+import { prisma } from '../config/db.js';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { config } from '../config/env/index';
-import logger from '../../utils/logger.js';
+import { config } from '../config/env.js';
+import logger from '../utils/logger.js';
 // ============================================
 // SCHEMAS
 // ============================================
@@ -379,3 +379,5 @@ export const authService = {
     },
 };
 //# sourceMappingURL=auth.js.map
+
+

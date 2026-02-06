@@ -1,6 +1,6 @@
-import { prisma } from '../lib/prisma/index';
+import { prisma } from '../lib/prisma.js';
 import { z } from 'zod';
-import logger from '../../utils/logger.js';
+import logger from '../utils/logger.js';
 // ============================================
 // ZSCHEMAS
 // ============================================
@@ -348,3 +348,5 @@ export const commentService = {
     },
 };
 //# sourceMappingURL=comment.js.map
+
+

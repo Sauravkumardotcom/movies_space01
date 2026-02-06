@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma/index';
-import logger from '../../utils/logger.js';
+import { prisma } from '../lib/prisma.js';
+import logger from '../utils/logger.js';
 // ============================================
 // ADMIN SERVICE
 // ============================================
@@ -294,3 +294,5 @@ export const adminService = {
     },
 };
 //# sourceMappingURL=admin.js.map
+
+

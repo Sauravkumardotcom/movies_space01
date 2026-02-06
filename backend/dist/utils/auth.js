@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { config } from './config/env';
+import { config } from '../config/env.js';
 export function hashPassword(password) {
     return bcrypt.hash(password, 10);
 }
