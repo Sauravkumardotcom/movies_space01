@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npx prisma generate && npx prisma db push && npm run build && node ../fix-all-aliases.mjs",
+  "buildCommand": "npm install && npx prisma db push && npm run build",
   "builds": [
     {
       "src": "dist/index.js",
