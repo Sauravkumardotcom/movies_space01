@@ -8,14 +8,14 @@ export const config = {
   PORT: parseInt(process.env.PORT || '3000', 10),
   API_VERSION: process.env.API_VERSION || 'v1',
 
-  // Database
-  DATABASE_URL: process.env.DATABASE_URL || process.env.MONGODB_URI || '',
+  // Database - REQUIRED, no defaults
+  DATABASE_URL: process.env.DATABASE_URL || '',
 
   // Redis
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
 
-  // JWT
-  JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
+  // JWT - REQUIRED
+  JWT_SECRET: process.env.JWT_SECRET || '',
   JWT_EXPIRY: process.env.JWT_EXPIRY || process.env.JWT_EXPIRE || '15m',
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'your-refresh-secret',
   JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRY || process.env.JWT_REFRESH_EXPIRE || '7d',
@@ -43,14 +43,14 @@ export const config = {
 
 export function validateConfig(): void {
   const requiredVars: (keyof typeof config)[] = ['DATABASE_URL', 'JWT_SECRET'];
-  const missing = requiredVars.filter((key) => !config[key]);
+  const missing = requiredVars.filter((key) => {
+    const value = config[key];
+    return !value || (typeof value === 'string' && value.trim() === '');
+  });
 
   if (missing.length > 0) {
     const errorMsg = `Missing required environment variables: ${missing.join(', ')}`;
     console.error(errorMsg);
-    // Don't exit in serverless - let requests fail with proper error response
-    if (config.NODE_ENV !== 'production') {
-      process.exit(1);
-    }
+    throw new Error(errorMsg);
   }
 }
