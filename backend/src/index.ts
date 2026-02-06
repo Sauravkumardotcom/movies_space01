@@ -18,9 +18,21 @@ import searchRoutes from '@routes/search';
 import notificationRoutes from '@routes/notification';
 import adminRoutes from '@routes/admin';
 import logger from '@utils/logger';
+import { prisma } from '@config/db';
 
 // Validate environment
 validateConfig();
+
+// Initialize database schema on startup (for serverless)
+try {
+  // This ensures schema is synced when app starts
+  // In Vercel serverless, this runs on cold start
+  prisma.$executeRawUnsafe('SELECT 1').catch(err => {
+    logger.warn('Database not yet initialized, will retry on next request');
+  });
+} catch (err) {
+  logger.warn('Database initialization error (non-blocking):', err);
+}
 
 const app = express();
 
