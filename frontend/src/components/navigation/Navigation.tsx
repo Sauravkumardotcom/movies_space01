@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useTheme } from '../theme/ThemeProvider';
-import { useAuth } from '../store/auth';
+import { useTheme } from '../../theme/ThemeProvider';
+import { useAuth } from '../../store/auth';
 
 interface NavItem {
   label: string;

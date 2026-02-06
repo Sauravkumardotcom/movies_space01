@@ -1,6 +1,6 @@
 import React from 'react';
-import { useTheme } from '../theme/ThemeProvider';
-import { Flex, VStack } from './layout/LayoutPrimitives';
+import { useTheme } from '../../theme/ThemeProvider';
+import { Flex, VStack } from '../layout/LayoutPrimitives';
 
 export const Skeleton: React.FC<{ width?: string; height?: string; className?: string }> = ({
   width = 'w-full',
