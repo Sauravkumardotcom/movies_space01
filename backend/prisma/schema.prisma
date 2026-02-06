@@ -84,7 +84,7 @@ model Movie {
   
   episodes    Episode[]
   watchlist   Watchlist[]
-  favorites   Favorite[]
+  // Favorites use polymorphic pattern (entityId + entityType in Favorite model)
   history     History[]
   ratings     Rating[]
   
@@ -126,7 +126,7 @@ model Short {
   likes       Int      @default(0)
   views       Int      @default(0)
   
-  favorites   Favorite[]
+  // Favorites use polymorphic pattern (entityId + entityType in Favorite model)
   history     History[]
   ratings     Rating[]
   
@@ -155,7 +155,7 @@ model Music {
   likes     Int      @default(0)
   
   playlists Playlist[]
-  favorites Favorite[]
+  // Favorites use polymorphic pattern (entityId + entityType in Favorite model)
   history   History[]
   ratings   Rating[]
   
