@@ -11,6 +11,7 @@ export interface User {
   username: string;
   avatar?: string;
   bio?: string;
+  role?: 'user' | 'admin'; // Optional role for admin features
   createdAt: string;
 }
 

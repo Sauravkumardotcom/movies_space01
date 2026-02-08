@@ -11,6 +11,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Home', path: '/', icon: '🏠' },
+  { label: 'Movies', path: '/movies', icon: '🎬' },
+  { label: 'Shorts', path: '/shorts', icon: '⏱️' },
   { label: 'Music', path: '/music', icon: '🎵' },
   { label: 'Playlists', path: '/playlists', icon: '📋' },
   { label: 'Uploads', path: '/uploads', icon: '📤' },

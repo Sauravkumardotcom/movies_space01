@@ -20,12 +20,6 @@ router.post('/signup', async (req, res) => {
   const requestId = res.locals.requestId;
   
   try {
-    console.log(`[${requestId}] Signup endpoint hit - Body:`, { 
-      email: req.body.email,
-      username: req.body.username,
-      hasPassword: !!req.body.password 
-    });
-
     const { email, username, password } = req.body;
 
     // Validate input

@@ -24,6 +24,10 @@ import SearchPage from './pages/SearchPage';
 import NotificationsPage from './pages/NotificationsPage';
 import AdminPage from './pages/AdminPage';
 import SocialPage from './pages/SocialPage';
+import { MoviesPage } from './pages/MoviesPage';
+import { ShortsPage } from './pages/ShortsPage';
+import { MovieDetailPage } from './pages/MovieDetailPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 // ============================================
 // HOME PAGE
@@ -170,6 +174,30 @@ function AppContent(): JSX.Element {
 
           {/* Protected Routes */}
           <Route
+            path="/movies"
+            element={
+              <ProtectedRoute>
+                <MoviesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={
+              <ProtectedRoute>
+                <MovieDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shorts"
+            element={
+              <ProtectedRoute>
+                <ShortsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/profile"
             element={
               <ProtectedRoute>
@@ -266,8 +294,8 @@ function AppContent(): JSX.Element {
             }
           />
 
-          {/* Catch all - redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Catch all - show 404 page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
     </div>

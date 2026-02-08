@@ -137,6 +137,20 @@ export default function SearchPage() {
           </div>
         )}
 
+        {activeTab === 'movies' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-4">Movies Search Results</h2>
+            <p className="text-gray-400 text-center py-12">Use the search bar above to find movies</p>
+          </div>
+        )}
+
+        {activeTab === 'music' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-4">Music Search Results</h2>
+            <p className="text-gray-400 text-center py-12">Use the search bar above to find music</p>
+          </div>
+        )}
+
         {activeTab === 'recommendations' && (
           <div>
             <h2 className="flex items-center gap-2 text-2xl font-bold text-white mb-4">
