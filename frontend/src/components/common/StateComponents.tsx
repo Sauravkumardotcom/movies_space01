@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertCircle } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { Flex, VStack } from '../layout/LayoutPrimitives';
 
@@ -44,7 +45,7 @@ export const LoadingScreen: React.FC = () => {
 };
 
 interface EmptyStateProps {
-  icon: string;
+  icon?: React.ReactNode;
   title: string;
   description?: string;
   action?: { label: string; onClick: () => void };
@@ -66,7 +67,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       className="min-h-96 py-12 px-4"
     >
       <VStack align="center" gap="md">
-        <div className="text-6xl">{icon}</div>
+        <div className="text-6xl">{icon || '📋'}</div>
         <h3 style={{ color: tokens.colors.text }} className="text-xl font-semibold">
           {title}
         </h3>
@@ -113,7 +114,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       className="min-h-96 py-12 px-4"
     >
       <VStack align="center" gap="md">
-        <div className="text-6xl">❌</div>
+        <AlertCircle className="w-16 h-16" style={{ color: tokens.colors.error }} />
         <h3 style={{ color: tokens.colors.error }} className="text-xl font-semibold">
           {title}
         </h3>
